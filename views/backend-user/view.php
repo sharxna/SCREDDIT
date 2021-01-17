@@ -19,19 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php if ($message != "n"): ?>
         <script>alert('<?= $message ?>')</script>
     <?php endif ?>
-<!--
-    <p>
-        <?php // Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?php /*
-        Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) */
-        ?>
-    </p> -->
+
     <?php if ($model->consent && $model->questionnaire_done): ?>
 <h2>  <?php  echo "Welcome back, " . $model->user_name ?></h2>
        <br>
@@ -62,10 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $dueAnswerSearchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                //'id',
                 'task.title',
-                //'User_id',
-                //'task.description',
                 'endDate',
                 [
                     'class' => 'yii\grid\ActionColumn',
@@ -75,10 +60,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             $url = Url::to(['answer/update', 'id' => $model->id]);
                             return Html::a('<button class="btn btn-primary">go</button>', $url, ['title' => 'update']);
                         },
-                    //'update' => function ($url, $model) {
-                    //    $url = Url::to(['answer/update', 'id' => $model->id]);
-                    //   return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => 'view']);
-                    //},
                     ]
                 ],
             ],
@@ -94,10 +75,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ['class' => 'yii\grid\SerialColumn'],
                 //'id',
                 'task.title',
-                //'task.description',
-                //'User_id',
-                //'input:ntext',
-                //'accepted:boolean',
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{update}',
@@ -117,7 +94,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         foreach ($selectedUserXQuestionnaireDataProvider->getModels() as $index => $questionnaireModel) {
             echo $form->field($questionnaireModel, "[$index]id")->hiddenInput()->label(false);
-            //echo $form->field($questionnaireModel, "[$index]answer")->hiddenInput()->label($questionnaireModel->questionnaire->question);
             echo $form->field($questionnaireModel, "[$index]answer")->checkbox(['checked' => false, 'label' => $questionnaireModel->questionnaire->question]);
 
             echo $form->field($questionnaireModel, "[$index]id_user")->hiddenInput()->label(false);

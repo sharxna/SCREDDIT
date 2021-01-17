@@ -77,47 +77,18 @@ class BackendUserController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-
-        $count = count(Yii::$app->request->post('UserXQuestionnaire', []));
+		$count = count(Yii::$app->request->post('UserXQuestionnaire', []));
 
         //Send at least one model to the form
-        $classcs = [];
+        $questionnairescores = [];
         for ($i = 0; $i < $count; $i++) {
-            $classcs[] = new UserXQuestionnaire();
+            $questionnairescores[] = new UserXQuestionnaire();
         }
-        //Create an array of the products submitted
-        //for($i = 1; $i < $count; $i++) {
-        //    $products[] = $this->findModel($id)->getAnswerXSIMS()[i];
-        //}
-        //Load and validate the multiple models
-        //die();
-        //echo "<pre>";
-        //var_dump(Yii::$app->request->post());
-        //echo "</pre>";		
-        if (Model::loadMultiple($classcs, Yii::$app->request->post())) {
-            //echo "<pre>";
-            //var_dump($classcs);
-            //echo "</pre>";
-            //die();
-            foreach ($classcs as $index => $cls) {
-                /*if ($cls->id_questionnaire == 31 && $cls->answer == true) {
-                    $userModel = $this->findModel($id);
-                    $userModel->consent = true;
-                    $userModel->activated_date = date('Y/m/d H:i:s');
-                    $userModel->save();
-                    
-                }*/
-                //echo "<pre>";
-                //var_dump($cls);
-                //die();
+        if (Model::loadMultiple($questionnairescores, Yii::$app->request->post())) {
+            foreach ($questionnairescores as $index => $cls) {
                 $mdl = UserXQuestionnaire::findOne(Yii::$app->request->post()['UserXQuestionnaire'][$index]['id']);
                 $mdl->answer = $cls->answer;
                 $mdl->save();
-
-                //var_dump($mdl);
-                //var_dump($mdl->getErrors());
-                //die;
-                //echo "</pre>";
             }
             $model = $this->findModel($id);
             $model->questionnaire_done=true;
@@ -129,13 +100,6 @@ class BackendUserController extends Controller {
 			'pagination' => false,
         ]);
         $selectedUserXQuestionnaireSearchModel = new QuestionnaireSearch();
-
-
-
-
-
-
-		
 
         $dueAnswerDataProvider = new ActiveDataProvider([
             'query' => $this->findModel($id)->getActiveAnswers()
@@ -272,7 +236,6 @@ class BackendUserController extends Controller {
                     $message = "Something went wrong";
                 }
                 
-                
                 $simss = SIMS::find()->all();
                 foreach ($simss as $sims)
                 {
@@ -300,8 +263,6 @@ class BackendUserController extends Controller {
                 {
                     $message = "Something went wrong";
                 }
-				//var_dump($answer->getErrors());
-				//die;
             }
             
             if ($model->validate())

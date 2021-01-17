@@ -50,19 +50,12 @@ $this->title = $model->id;
         DetailView::widget([
             'model' => $model,
             'attributes' => [
-                //'User_id',
-                //'Task_id',
-                //'task.description:ntext',
                 'description' => 
                 [
                     'attribute' => 'description',
                     'value' => $description
                 ],
-                //'input:ntext',
-                //'accepted:boolean',
-                //'startDate',
                 'endDate',
-            //'active'
             ],
         ])
         ?>
@@ -74,13 +67,11 @@ $this->title = $model->id;
         /* @var $model app\models\Answer */
 
         $this->title = 'Update Answer: ' . $model->id;
-        //$this->params['breadcrumbs'][] = ['label' => 'Answers', 'url' => ['index']];
-        //$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
         $this->params['breadcrumbs'][] = 'Update';
         ?>
         <div class="answer-update">
 
-                    <!---<h1><?php //Html::encode($this->title)   ?></h1>--->
+                    
 
             <?=
             $this->render('_form', [
@@ -103,10 +94,6 @@ $this->title = $model->id;
                     'attribute' => 'description',
                     'value' => $description
                 ],
-            //'id',
-            //'User_id',
-            //'Task_id',
-            //'task.description:ntext',
             ],
         ])
         ?>
@@ -120,23 +107,12 @@ exactly. </h5><br>
         $options = array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7);
         foreach ($selectedSIMSDataProvider->getModels() as $index => $simsModel) {
             echo $form->field($simsModel, "[$index]id")->hiddenInput()->label(false);
-            echo $form->field($simsModel, "[$index]scale")->radioList($options)->label($simsModel->sIMS->title); //($simsModel, "[$index]scale")->textInput(['maxlength' => true])->label($simsModel->sIMS->title);
+            echo $form->field($simsModel, "[$index]scale")->radioList($options)->label($simsModel->sIMS->title);
             echo $form->field($simsModel, "[$index]id_answer")->hiddenInput()->label(false);
             echo $form->field($simsModel, "[$index]id_SIMS")->hiddenInput()->label(false);
-            // echo "<pre>";
-            // var_dump($simsModel->scale);
-            // echo "</pre>";
         }
         ?>
 
-        <?php /* echo GridView::widget([
-          'dataProvider' => $selectedSIMSDataProvider,
-          'columns' => [
-          'sIMS.title',
-          'scale',
-
-          ],
-          ]); */ ?>
         <div class="form-group">
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             <?php ActiveForm::end(); ?>

@@ -94,18 +94,21 @@ class Answer extends \yii\db\ActiveRecord
         return $this->hasMany(AnswerXSIMS::className(), ['id_answer' => 'id']);
     }
     
+	//Calulate startdate
     public function getStartDate(){
         $date = strtotime($this->user->activated_date);
         $date = strtotime("+" . $this->task->task_day . " day", $date);
         return date('d-m-Y H:i:s', $date);
     }
     
+	//Calulate enddate
     public function getEndDate(){
         $date = strtotime($this->user->activated_date);
         $date = strtotime("+" . $this->task->task_day + 1 . " day", $date);
         return date('d-m-Y H:i:s', $date);
     }
 	
+	//Returns true if NOW is between startdate and enddate
 	public function getActive() {
 		$paymentDate = strtotime(date('d-m-Y H:i:s'));
 		$contractDateBegin = strtotime($this->getStartDate());
@@ -131,9 +134,7 @@ class Answer extends \yii\db\ActiveRecord
 			$this->image = null;
 			$this->save();
 			
-			
-			//Image::thumbnail('uploads/big' . $this->id . '.' . $this->image->extension, 500, 1000)->save('uploads/' . $this->id . '.' . $this->image->extension);
-            $imagine = Image::getImagine();
+			$imagine = Image::getImagine();
 			$image = $imagine->open($fileName);
 			$image->resize(new Box(500, 300))->save($finalFileName, ['quality' => 70]);
 			return true;

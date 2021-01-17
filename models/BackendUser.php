@@ -28,13 +28,6 @@ class BackendUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInter
 
     public function init() {
         parent::init();
-
-//listen to after login event
-        $this->on(yii\web\User::EVENT_AFTER_LOGIN, function ($event) {
-            echo "hi";
-            die();
-            Yii::$app->setHomeUrl("www.google.com");
-        });
     }
 
     /**
@@ -86,8 +79,6 @@ class BackendUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInter
 
 
         return $answers;
-
-//return Answer::find()->where(['User_id' => $this->id]);
     }
 
     public function getAuthKey() {
@@ -126,7 +117,7 @@ class BackendUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInter
 		
         $score = 0;
 		$baseScore = $this->getBaseScore();
-		//var_dump($baseScore);
+		//cap basescore between 0 and 10.000
 		if ($baseScore > 10000)
 		{
 			$score = 10000;
@@ -140,12 +131,8 @@ class BackendUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInter
 			$score = $baseScore;
 		}
 		
-		//echo "basescore: " . $baseScore ."<br>";
-		//echo "score: " . $score ."<br>";
-		
         $plusScore = 0;
         $minScore = 0;
-		// var_dump($answers);
         foreach ($answers as $answer)
 		{
             $now = strtotime(date("Y-m-d H:i:s"));
@@ -155,45 +142,27 @@ class BackendUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInter
 			{
 				if ($score + $answer->task->points < 10000)
 				{
-					//echo $score . " + " . $answer->task->points ."<br>";
 					$score += $answer->task->points;
 				}
 				else
 				{
 					$score = 10000;
 				}
-                // $plusScore += $answer->task->points;
                 
             }
 			else if ($now > $endDate && !$answer->completed)
 			{
 				if ($score - $answer->task->points > 0)
 				{
-					//echo $score . " - " . $answer->task->points ."<br>";
 					$score -= $answer->task->points;
 				}
 				else
 				{
 					$score = 0;
 				}
-				
-				
-                //$score -= $answer->task->points;
-                // $minScore -= $answer->task->points;
             }
         }
-        //die;
-        // $score = $plusScore - $minScore;
-
-        /*if ($score <= 0) {
-            $score = 0;
-        } else if ($score >= 10000) {
-            $score = 10000;
-        }*/
-		//$this->db_score = 100;
-		// $thisModel = BackendUser::findOne($this->getId());
-		// $thisModel->db_score = 100;
-		// $thisModel->save();
+		
         return $score;
     }
 

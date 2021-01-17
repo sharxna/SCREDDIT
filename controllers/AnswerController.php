@@ -31,7 +31,6 @@ class AnswerController extends Controller {
                 'rules' => [
                     [
                         'actions' => ['view', 'update'],
-                        //'allow' => (isset($_GET['id']) && Yii::$app->user->getId() == $this->findModel($_GET['id'])->user->id && $this->findModel($_GET['id'])->active ? true : false),
                         'allow' => (isset($_GET['id']) && Yii::$app->user->getId() == $this->findModel($_GET['id'])->user->id || Yii::$app->user->getId() == 1 ? true : false),
                         'roles' => ['@'],
                     ],
@@ -72,38 +71,20 @@ class AnswerController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        //Find out how many products have been submitted by the form
+        //Find out how many sims scores have been submitted by the form
         $count = count(Yii::$app->request->post('AnswerXSIMS', []));
 
         //Send at least one model to the form
-        $classcs = [];
+        $simsscores = [];
         for ($i = 0; $i < $count; $i++) {
-            $classcs[] = new AnswerXSIMS();
+            $simsscores[] = new AnswerXSIMS();
         }
-        //Create an array of the products submitted
-        //for($i = 1; $i < $count; $i++) {
-        //    $products[] = $this->findModel($id)->getAnswerXSIMS()[i];
-        //}
-        //Load and validate the multiple models
-        //die();
-        //echo "<pre>";
-        //var_dump(Yii::$app->request->post());
-        //echo "</pre>";		
-        if (Model::loadMultiple($classcs, Yii::$app->request->post())) {
-            //echo "<pre>";
-            //var_dump($classcs);
-            //echo "</pre>";
-            //die();
-            foreach ($classcs as $index => $cls) {
-                //echo "<pre>";
-                //var_dump($cls);
-                //die();
+        //Create an array of the products submitted	
+        if (Model::loadMultiple($simsscores, Yii::$app->request->post())) {
+            foreach ($simsscores as $index => $cls) {
                 $mdl = AnswerXSIMS::findOne(Yii::$app->request->post()['AnswerXSIMS'][$index]['id']);
                 $mdl->scale = $cls->scale;
                 $mdl->save();
-                //var_dump($mdl);
-                //var_dump($mdl->getErrors());
-                //echo "</pre>";
             }
         }
 
@@ -116,12 +97,6 @@ class AnswerController extends Controller {
                     'selectedSIMSSearchModel' => $selectedSIMSSearchModel,
                     'selectedSIMSDataProvider' => $selectedSIMSDataProvider,
         ]);
-
-
-
-
-
-
 
         $selectedSIMSDataProvider = new ActiveDataProvider([
             'query' => $this->findModel($id)->getAnswerXSIMS(),
@@ -168,24 +143,12 @@ class AnswerController extends Controller {
         for ($i = 0; $i < $count; $i++) {
             $classcs[] = new AnswerXSIMS();
         }
-        //$model = new UploadImageForm();
-
 
         if (Model::loadMultiple($classcs, Yii::$app->request->post())) {
-            //echo "<pre>";
-            //var_dump($classcs);
-            //echo "</pre>";
-            //die();
             foreach ($classcs as $index => $cls) {
-                //echo "<pre>";
-                //var_dump($cls);
-                //die();
                 $mdl = AnswerXSIMS::findOne(Yii::$app->request->post()['AnswerXSIMS'][$index]['id']);
                 $mdl->scale = $cls->scale;
                 $mdl->save();
-                //var_dump($mdl);
-                //var_dump($mdl->getErrors());
-                //echo "</pre>";
             }
             $model->completed = true;
             $model->save();
@@ -197,10 +160,6 @@ class AnswerController extends Controller {
             switch ($model->task->input_type) {
 				case 3: //Object detection with timestamp
                 case 1: //Object detection
-                    if ($model->input === $model->task->correct_answer) {
-                        $model->accepted = true;
-                    }
-					
                     ini_set('upload_max_filesize', '10M');
                     ini_set('post_max_size', '10M');
                     ini_set('max_input_time', 300);
@@ -208,7 +167,7 @@ class AnswerController extends Controller {
                     $model->image = UploadedFile::getInstance($model, 'image');
                     if (isset($model->image) && $model->upload()) {
                         // file is uploaded successfully
-						if ($model->task->input_type == 3)
+						if ($model->task->input_type == 3) //Check timestamp
 						{
 							$now = strtotime(date('d-m-Y H:i:s'));
 							$startTime = strtotime($model->task->from_time);//'HH:ii:ss');
@@ -232,7 +191,6 @@ class AnswerController extends Controller {
 						var_dump($model->getErrors());
 						echo "</pre>";
 						return $this->redirect(['answer/update', 'id'=>$model->id]);
-					//die;
                     }
                     $model->waiting = true;
 					$model->save();
@@ -243,31 +201,11 @@ class AnswerController extends Controller {
                     if ($model->input === $model->task->correct_answer) {
                         $model->accepted = true;
                     } else {
-                        //Yii::$app->user->setFlash('success', "Data saved!");
-                        //echo "<script>alert('fout')</script>";
                         $message = "Answer incorrect";
                     }
                     $model->save();
                     break;
-                //case 4: //button
-                    /*if ($buttontaps >= 34) {
-                        echo 'hey';
-                        $model->accepted = true;
-                    } else {
-//Yii::$app->user->setFlash('success', "Data saved!");
-//echo "<script>alert('fout')</script>";
-                        $message = "Answer incorrect";
-                    }//
-                    $model->save();
-                    break;*/
             }
-        
-			
-
-
-
-
-
         }
 
         echo "<pre>";
@@ -279,18 +217,12 @@ class AnswerController extends Controller {
         ]);
         $selectedSIMSSearchModel = new \app\models\SIMSSearch();
 
-
-
-        //$message = "n1";
-
         return $this->render('update', [
                     'model' => $this->findModel($id),
                     'selectedSIMSSearchModel' => $selectedSIMSSearchModel,
                     'selectedSIMSDataProvider' => $selectedSIMSDataProvider,
                     'message' => $message
         ]);
-
-
 
         return $this->render('update', [
                     'model' => $model,

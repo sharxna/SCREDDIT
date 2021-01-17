@@ -64,7 +64,7 @@ class LoginForm extends Model
 			//Yii::$app->homeUrl = 'http://example.com/';
 			Yii::$app->homeUrl = "index.php?r=backend-user%2Fview&id=" . Yii::$app->user->id;
             Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-            return "HI";//Yii::$app->response->redirect(url::to(['/backend-user/index','id'=>1]));
+            return ".";//Yii::$app->response->redirect(url::to(['/backend-user/index','id'=>1]));
         }
         return false;
     }
